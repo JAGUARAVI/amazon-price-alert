@@ -2,20 +2,17 @@ from bs4 import BeautifulSoup
 from requests_html import HTMLSession
 import os 
 import time
-import smtplib , ssl
 import requests
+from discord_webhook import DiscordWebhook
 
 class Scraper:
 
     #Initializes the scraper C3PO
-    def __init__(self,url,budget,u_email):
+    def __init__(self,url,budget):
 
         #Attributes about product
         self.url = url
         self.budget = budget
-        
-        #Setting user email
-        self.u_email = u_email
 
         #Attributes about scraping
         self.session = HTMLSession()
@@ -70,17 +67,13 @@ class Scraper:
         self.alert = self.is_below_budget()
         self.status = False
         if self.alert:
-            self.status = self.send_email()
+            self.status = self.send_msg()
         return self.status
     
-    #Sends an email when the condition is satisfied. Under testing!
-    def send_email(self):
+    #Sends a message when the condition is satisfied.
+    def send_msg(self):
 
-        #Attributes for email sending
-        port = 587
-        smtp_server = 'smtp.gmail.com'
-        self.email = str(os.environ.get('DEVELOPER_MAIL'))
-        self.app_pw = str(os.environ.get('DEVELOPER_PASS'))
+        webhook_url = str(os.environ.get('WEBHOOK'))
 
         #Message details
         subject = f'The price of {self.get_title()} is within your budget!'
@@ -92,27 +85,16 @@ class Scraper:
 
         message = f"Subject: {subject}\n\n{body}"
 
-        #Establishing server
-        context = ssl.create_default_context()
-        self.server = smtplib.SMTP(smtp_server, port)
+        webhook = DiscordWebhook(url=webhook_url, content=message)
+        response = webhook.execute()
 
-        #Mail sending
-        self.server.ehlo()
-        self.server.starttls(context=context)
-        self.server.ehlo()
-        self.server.login(self.email,self.app_pw)
-
-        self.server.sendmail(self.email,self.u_email,message)
-
-        print("Email sent successfully!")
-        self.server.quit()
+        print("Message sent successfully!")
         return True
 
 
 def main():
     url = input("Paste the link of the Amazon product whose price you wish to monitor:")
     budget = int(input("Enter you budget price:"))
-    u_email = input("Enter your email:")
     inp_str = ("How frequuently would you like to check the price?"
                "\n1.Every hour\n2.Every 3 hours\n3.Every 6 hours"
                "\nEnter your choice(default is 6 hours):")
@@ -126,10 +108,10 @@ def main():
     msg = ("Great! Now just sit back and relax. Minimize this program and be sure "
             "that it is running.\nAdditionally, ensure that there is stable internet connection "
             "during the time this program runs.\nIf the price of the product falls within your budget, "
-            "you will recieve an email regarding the same and this program will auto-close.\nThank you for using "
-            "C3PO scraper! Beep-bop bop-beep.")
+            "you will recieve a message regarding the same and this program will auto-close.\nThank you for using "
+            "C3PO scraper modidief by JAGUARAVI! Beep-bop bop-beep.")
     print(msg)
-    c3po = Scraper(url,budget,u_email)
+    c3po = Scraper(url,budget)
     while True:
         if c3po.run():
             break
