@@ -19,3 +19,4 @@ tqdm==4.49.0
 urllib3==1.25.10
 w3lib==1.22.0
 websockets==8.1
+discord-webhook==1.1.0
