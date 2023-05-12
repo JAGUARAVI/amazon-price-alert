@@ -109,7 +109,7 @@ def main():
             "that it is running.\nAdditionally, ensure that there is stable internet connection "
             "during the time this program runs.\nIf the price of the product falls within your budget, "
             "you will recieve a message regarding the same and this program will auto-close.\nThank you for using "
-            "C3PO scraper modidief by JAGUARAVI! Beep-bop bop-beep.")
+            "C3PO scraper modified by JAGUARAVI! Beep-bop bop-beep.")
     print(msg)
     c3po = Scraper(url,budget)
     while True:
