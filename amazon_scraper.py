@@ -101,7 +101,7 @@ def main():
     time_choice = int(input(inp_str))
     if time_choice == 1:
         time_delay = 60 * 60
-    elif time_choide == 2:
+    elif time_choice == 2:
         time_delay = 3 * 60 * 60
     else:
         time_delay = 6 * 60 * 60
